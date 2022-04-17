@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="subject"></div>
+    <div id="toc"></div>
+    <div id="control"></div>
+    <div id="content"></div>
+
+
+    <Script>
+       function subject(){
+            document.querySelector('#subject').innerHTML =`
+                <header>
+                    <h1>WEB</h1>
+                    Hello, WEB!
+                </header>
+            `;
+
+       }
+
+
+       function TOC(){
+           var state = store.getState();
+           var i = 0;
+           var liTags ='';
+           while(i<state.contents.length){
+               liTags = liTags +`
+                    <li>
+
+                        <a onclick ="
+                          event.preventDefault();
+                          var action = {type:'SELECT', id : ${state.contents[i].id}}
+                          store.dispatch(action);
+                        " 
+                        href ="${state.contents[i].id}">${state.contents[i].title}</a>    
+                    </li>
+               `;
+               i = i+1;
+           }
+           document.querySelector('#toc').innerHTML =`
+           <nav>
+                <ol>
+                    ${liTags}
+                </ol>
+            </nav>
+           `;
+       }
+       // 글쓰고 지우기create, delete
+       function control(){
+
+        document.querySelector('#control').innerHTML=`
+        <ul>
+            <li><a
+                onclick ="event.preventDefault();
+                store.dispatch({
+                    type:'CHANGE_MODE',
+                    mode: 'create'
+                });
+                "
+                href="/create">create</a></li>
+            <li><input 
+                onclick ="store.dispatch({
+                    type: 'DELETE'
+                })"
+                type="button" value ="delete">delete</a></li>
+        <ul>
+        
+        `;
+        
+       }
+       function article(){
+           var state = store.getState();
+           if(state.mode ==='create'){
+               //create 모드 인 경우 -> 글을 입력할 수 있는 input이 나온다.
+
+               document.querySelector('#content').innerHTML =`
+                <article>
+                    <form onsubmit ="event.preventDefault();
+                        var _title = this.title.value;
+                        var _desc= this.desc.value;
+                        store.dispatch({
+                            type: 'CREATE',
+                            title: _title,
+                            desc : _desc
+                        })
+                    "
+                    >
+                        <p>
+                            <input ="text" name = "title" placeholder ="title">
+                        </p>
+                        <p>
+                            <textarea name ="desc"
+                            placeholder ="description"></textarea>
+                        </p>
+                        <p>
+                            <input type="submit">
+                        </p>
+                    </form>
+                </article> 
+               `;
+
+           }else if(state.mode == 'read'){
+               //read 모드에는 글이 나온다.
+            var i = 0;
+            var aTitle , aDesc;
+            while(i <state.contents.length){//반복하며 선택한 id와 컨텐츠id가 같다면
+                if(state.contents[i].id === state.selected_id){
+                    aTitle = state.contents[i].title;
+                    aDesc = state.contents[i].desc;
+                    break;
+                }
+                i = i+1;
+                }
+
+
+            document.querySelector('#content').innerHTML =`
+                <article>
+                    <h2>${aTitle}</h2>
+                    ${aDesc}
+                </article>
+            `;
+
+           }else if(state.mode =='welcome'){
+            document.querySelector('#content').innerHTML =`
+                <article>
+                    <h2>welcome</h2>
+                    Hello, Redux!
+                </article>
+            `;
+           }
+       }
+
+
+       //리듀서 : state의 상태를 바꿔준다.
+       // 상태를 바꾸고, state의 현재 상태를 return
+       function reducer(state, action){
+        //console.log(state, action);
+        if(state === undefined){// 초기값 설정
+            return{
+                max_id : 2,
+                mode :'create',
+                selected_id : 2,
+                contents:[
+                    {id:1, title : 'HTML1', desc: 'HTML is...'},
+                    {id:2, title : 'CSS', desc: 'CSS is...'}
+                ]
+            }
+        }
+
+        var newState ;
+        if(action.type ==='SELECT'){
+            //복제하기               빈객체에, state 복사하고, selected_id 덮어쓰기
+            newState = Object.assign({},
+             state, 
+             {selected_id :action.id, mode:'read'} );
+        } else if(action.type==='CREATE'){
+            // concat: 배열을 그대로 복제해준다 (object.assign보다 쉽게)
+            var newContents = state.contents.concat(); 
+            
+            var newMaxId = state.max_id +1;
+
+            // contents추가하기
+            newContents.push({id: newMaxId, title : action.title, desc: action.desc})
+
+            // 새로운 상태
+            newState = Object.assign({}, state, {
+                max_id :newMaxId,
+                contents : newContents, //contents추가된거로 state 바꾸기
+                mode: 'read' 
+            });
+        } else if(action.type === 'DELETE'){
+            
+            var newContents =[];
+            var i= 0;
+            while( i< state.contents.length){
+
+                if(state.selected_id !== state.contents[i].id){
+                    newContents.push(
+                        state.contents[i]
+                    );
+                }
+                i = i+1;
+                break;
+            }
+            // 새로운 content로 state update
+            newState = Object.assign({},state, {
+                contents: newContents,
+                mode : 'welcome'
+            
+            });
+        }else if(action.type==='CHANGE_MODE'){
+            
+            newState = Object.assign({},state,{mode: action.mode});
+        }
+
+        console.log(action, state, newState);
+        return newState;
+
+       }
+
+
+       // 스토어 만들고 reducer 주입
+       var store = Redux.createStore(reducer);
+
+       //state값이 바꼈을때 article이 자동으로 호출되도록 하기 -> subscribe
+       store.subscribe(article);
+       // create하면 자동으로 TOC호출해서 contents 새로 보여주기
+       store.subscribe(TOC);
+
+       subject();
+       TOC();
+       control();
+       article();
+
+       
+    </Script>
+
+    
+   
+    
+    
+</body>
+</html>

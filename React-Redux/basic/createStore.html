@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"></script>
+
+    </head>
+    <body>
+
+        <style>
+            .container{
+                border: 5px, solid, black;
+                padding: 10px;
+            }
+
+        </style>
+       <div id ="red"></div>
+        <script>
+        
+            // 리듀서를 만든다.
+            // 리듀서의 역할: 새로운 state값을 만들어준다.
+            //                기존 state 값과 action값이 파라미터
+            function reducer(state, action){
+                if(state === undefined){
+                    //state가 정해지지 않은 경우 -> 초기화
+                    return {color : 'yellow'}
+                }
+            }
+            // 스토어를 만든다.-> 자동으로 내부에 state가 생성된다.
+            var store= Redux.createStore(reducer);
+            
+
+            // getstate : 현재 state값 가져오기
+            console.log(store.getState());
+
+
+
+            function red(){
+                var state = store.getState(); // 초기 yellow
+                document.querySelector('#red').innerHTML= `
+                    <div class= "container" id="component_red" style ="background-color : ${state.color}"">
+                        <h1>red</h1>
+                        <input type="button" value="red"
+                        onclick ="document.querySelector('#component_red').style.backgroundColor ='red'"></input>
+                    </div>`
+                ;
+            }
+
+            red();
+
+
+            
+        </script>
+    </body>
+
+</html>

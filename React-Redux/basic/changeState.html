@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"></script>
+
+    </head>
+    <body>
+
+        <style>
+            .container{
+                border: 5px solid black;
+                padding: 10px;
+            }
+
+        </style>
+       <div id ="red"></div>
+       <div id ="blue"></div>
+       <div id ="green"></div>
+        <script>
+        
+            // 리듀서를 만든다.
+            // 리듀서의 역할: 새로운 state값을 만들어준다.
+            //                기존 state 값과 action값이 파라미터
+            function reducer(state, action){
+
+                console.log(state,action);
+                // 최초 한번 무조건 실행됨
+                if(state === undefined){
+                    //state가 정해지지 않은 경우 -> 초기화
+                    return {color : 'yellow'}
+                }
+                var newState;
+
+                if(action.type==='CHANGE_COLOR'){
+                    //state값을복제해서 return 한다.
+                    // -> 복제되기 때문에 이전 버전을 알 수 있게 만듬
+                    newState = Object.assign({}, state, {color:action.color});
+                    //state.color ='red';
+                    
+
+                }
+
+                console.log(action.type, action, state, newState);
+                return newState;
+                
+            }
+            // 스토어를 만든다.-> 자동으로 내부에 state가 생성된다.
+            var store= Redux.createStore(
+                reducer,
+                window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+            );
+            
+
+            // getstate : 현재 state값 가져오기
+            //console.log(store.getState());
+
+
+
+            function red(){
+                var state = store.getState(); 
+                document.querySelector('#red').innerHTML= `
+                    <div class= "container" id="component_red" style ="background-color : ${state.color}"">
+                        <h1>red</h1>
+                        <input type="button" value="red" 
+                        onclick ="store.dispatch({type:'CHANGE_COLOR', color: 'red'});"
+                        ></input>
+                    </div>`
+                ;
+            }
+            // dispatch : 액션 type을 파라미터로 넘겨준다.
+
+            store.subscribe(red);
+            red();
+
+
+            function blue(){
+                var state = store.getState(); 
+                document.querySelector('#blue').innerHTML= `
+                    <div class= "container" id="component_blue" style ="background-color : ${state.color}"">
+                        <h1>blue</h1>
+                        <input type="button" value="blue" 
+                        onclick ="store.dispatch({type:'CHANGE_COLOR', color: 'blue'});"
+                        ></input>
+                    </div>`
+                ;
+            }
+            // dispatch : 액션 type을 파라미터로 넘겨준다.
+            
+            // subscribe에 계속 렌더되길 원하는 render함수 등록하기
+            store.subscribe(blue);
+            blue();
+
+
+            function green(){
+                var state = store.getState(); 
+                document.querySelector('#green').innerHTML= `
+                    <div class= "container" id="component_green" style ="background-color : ${state.color}"">
+                        <h1>green</h1>
+                        <input type="button" value="green" 
+                        onclick ="store.dispatch({type:'CHANGE_COLOR', color: 'green'});"
+                        ></input>
+                    </div>`
+                    
+                ;
+            }
+            // dispatch : 액션 type을 반드시 파라미터로 넘겨준다.
+            
+            // subscribe에 계속 렌더되길 원하는 render함수 등록하기
+            store.subscribe(green);
+            green();
+
+
+
+            
+        </script>
+    </body>
+
+</html>
