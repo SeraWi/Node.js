@@ -11,5 +11,5 @@ function checkStringOddOrEven(str){
 }
 
 
-console.log(checkNumber(10));
-console.log(checkStringOddOrEven('hello'));
+console.log(checkNumber(10));// checkOddOrEven 함수 실행됨 
+console.log(checkStringOddOrEven('hello')); // 위에 작성한 함수 실행
