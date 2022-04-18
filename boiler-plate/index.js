@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 5000
+const port = 4000
 
 
 const { User } = require('./models/User');
@@ -35,6 +35,9 @@ app.post('/register', (req, res) =>{
 
   const user = new User(req.body)
 
+
+  //비밀번호 암호화
+
   //몽고 db 함수 (회원 정보 저장)
   user.save((err, userInfo) =>{
     if(err) return res.json({success: false, err}) //실패시
@@ -56,4 +59,4 @@ app.listen(port, () => {
 
 //, useCreateIndex: true, useFindAndModify : false
 
-//node mon
+//npm install bcrypt --save : 비밀번호 암호화
