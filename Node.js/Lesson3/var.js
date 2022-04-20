@@ -6,3 +6,9 @@ module.exports ={ // 객체임
     odd,
     even
 };
+
+
+// module.exports ={ // 객체임
+//     odd:odd,
+//     even:even
+// };

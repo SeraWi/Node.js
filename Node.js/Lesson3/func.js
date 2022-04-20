@@ -1,4 +1,7 @@
-const value =require('./var'); // var.js 에서 js 략 가능
+const value =require('./var'); // var.js 에서 js 략 가능 . -> 내가 있는 폴더
+//자바스크립트 문법처럼
+import {odd,even} from './var'; //import와 require가 비슷함
+
 
 //const odd = value. odd;
 //const even = value. even;

@@ -1,5 +1,5 @@
-const {odd, even} = require('./var');
-const checkNumber = require('./func');
+const {odd, even} = require('./var'); //구조분해할당은 변수이름 같도록
+const checkNumber = require('./func'); //변수명은 마음대로 사용가능
 
 
 function checkStringOddOrEven(str){
