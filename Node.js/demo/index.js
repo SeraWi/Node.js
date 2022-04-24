@@ -1,18 +1,38 @@
+const nacl = require('tweetnacl'); //keypair 생성
+const { generateMnemonic, mnemonicToSeedSync } = require('bip39'); // mnemonic 생성
+const { addressToBech32 } = require('@oasisprotocol/client/dist/staking');
+const ED25519_CURVE ='ed25519 seed';
 
-
-const {generateMnemonic} = require('bip39');
 
 const mnemonic = generateMnemonic(256);
+console.log(`menmonic 생성 : ${mnemonic}`);
+const passphrase = generateMnemonic(256);
+console.log(`passpharse 생성  : ${passphrase}`);
 
-console.log('mnemonic 생성');
-console.log(mnemonic);
+const { HDKey } = require(`@oasisprotocol/client`).hdkey;
+const { addressFromPublicKey , publicKeyToAddress } = require('@oasisprotocol/client').staking;
 
+const buffer = mnemonicToSeedSync(mnemonic);
+console.log(`buffer  : ${buffer}`);
 
-const HDKey = require('@oasisprotocol/client').hdkey;
+const seed = new Uint8Array(buffer.toJSON().data.slice(0,32));
 
-const coin = new HDKey();
+console.log(`seed 생성 : ${seed}`);
 
+//const keyPair = nacl.sign.keyPair.fromSeed(seed);
 
-//console.log(keypair);
+const keyPair = HDKey.getAccountSigner(mnemonic, 0,passphrase);
+console.log(keyPair);
 
+//console.log(keyPair); //안에 public 과 secretkey 있음
+//console.log(keyPair.publicKey.toString());
+//const publicKey = keyPair.publicKey;
+//const data = await addressFromPublicKey(publicKey);
 
+//const address = addressToBech32(data);
+//console.log(`address : ${address}`);
+
+// const key = HDKey.makeHDKey(ED25519_CURVE, seed);
+// const publicKey = key.publicKey;
+
+// const address = addressFromPublicKey(publicKey);

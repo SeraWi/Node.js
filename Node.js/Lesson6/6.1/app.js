@@ -17,6 +17,12 @@ app.use((req, res, next) =>{
     // 서버에 요청할때마다 실행
     console.log('모든 요청에 실행하고 싶어요');
     next();
+}, (req, res, next) =>{
+    try{
+        console.log(askfajf) ;//undefined 에러 발생
+    }catch{
+        next(err); //err 발생시키면 , next로 다음 미들웨어 발생 -> 에러처리 미들웨어 실행
+    }
 })
 
 // 4. 라우터 설정
@@ -36,7 +42,16 @@ app.get('/', (req, res) =>{ //첫요청
    // res.send('hello express');
    
    //index.html파일을 보여줌
-    res.sendFile(path.join(__dirname, 'index.html'));
+   //res.sendFile(path.join(__dirname, 'index.html'));
+
+    //한 라우터에서 send 여러번 할 수 없다 -> 에러 난다!
+    // res.send, res.json, res.sendFile -> 여러번 쓸 수 없다
+    // 요청한번에 응답 한번만!
+
+    res.json({hello : 'zerocho'}); //json 응답
+
+    console.log('여기 실행된다..!!응답을 보낼 뿐 함수가 종료되는건 안된다.');
+
 });
 
 app.post('/',(req,res) =>{
@@ -73,15 +88,16 @@ app.get('/about', (req,res) =>{
 // })
 
 
-// 5. 에러 미들웨어
-// err, req, res, next 네가지 반드시 필요
+// 404 처리
 app.use((req, res, next) =>{
     //404
     res.send('404 임!!!');
 })
 
+// 5. 에러 미들웨어
+// err, req, res, next 네가지 반드시 필요
 app.use((err, req, res, next)=>{
-    console.err(err);
+    //console.err(err);
     console.log('에러 미들웨어 실행');
     res.send('에러났지롱,,,!!');
 })

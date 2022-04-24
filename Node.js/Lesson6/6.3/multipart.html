@@ -1,0 +1,19 @@
+<form id="form" action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image1" />
+    <input type="file" name="image2" />
+    <input type="text" name="title" />
+    <button type="submit">업로드</button>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+document.getElementById('form').addEventListener('submit', (e) =>{
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('image1', e.target.image.files[0]);
+    formData.append('image2', e.target.image.files[1]);
+    formData.append('title', e.target.title.value);
+    axios.post('/upload', formData);
+});
+
+
+</script>
