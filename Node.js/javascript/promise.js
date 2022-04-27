@@ -1,4 +1,5 @@
 // Promise : 내용이 실행은 되었지만, 결과를 아직 반환하지 않은 객체
+// 결과를 가지고 있다가 원할때 꺼내서 쓸 수 있다.
 // Then 을 붙이면 결과를 반환함
 
 const { resolveObjectURL } = require("buffer");
@@ -85,7 +86,7 @@ fetchNumber
 // 4. error handling
 const getHen = ()=>
  new Promise((resolve, reject) => {
-     setTimeout(() => resolve('chicken'), 1000);
+     setTimeout(() => resolve('chicken'), 1000);// 성공하면 1초후에 chicken 생성
  });
  
  const getEgg = hen =>
@@ -99,12 +100,12 @@ const getHen = ()=>
 })
 
 getHen()
-.then(hen => getEgg(hen))
+.then(hen => getEgg(hen)) 
 .then(egg => cook(egg))
 .then(meal => console.log(meal));
  
 getHen()
-.then(getEgg)
+.then(getEgg) //한가지만 받아오는 경우 옆 처럼 생략 가능
 .catch(error => { //egg 가 없으면 bread 전달
     return 'bread';
 })
