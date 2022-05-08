@@ -9,8 +9,12 @@ const dotenv = require('dotenv');
 const path = require('path');
 
 dotenv.config(); // 환경변수 사용할 수 있게
+
 const app = express();
 app.set('port', process.env.PORT || 3000);
+
+app.set('views', path.join(__dirname, 'views')); 
+app.set('view engine', 'pug'); // pug 템플릿 엔진
 
 app.use(morgan('dev'));
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -28,7 +32,8 @@ app.use(session({
   name: 'session-cookie',
 }));
 
-
+const indexRouter = require('./routes'); //분리한 라우터 
+const userRouter = require('./routes/user');
 
 const multer = require('multer');
 const fs = require('fs');
@@ -53,6 +58,10 @@ const upload = multer({
   }),
   limits: { fileSize: 5 * 1024 * 1024 }, 
 });
+
+app.use('/', indexRouter); 
+app.use('/user', userRouter); // 분리된 라우터
+
 app.get('/upload', (req, res) => {
   res.sendFile(path.join(__dirname, 'multipart.html'));
 });

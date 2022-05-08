@@ -15,22 +15,28 @@ const { addressFromPublicKey , publicKeyToAddress } = require('@oasisprotocol/cl
 const buffer = mnemonicToSeedSync(mnemonic);
 console.log(`buffer  : ${buffer}`);
 
+// mnemonic으로 seed를 생성하고 (buffer type을 Uint8Array로 변경)
 const seed = new Uint8Array(buffer.toJSON().data.slice(0,32));
 
 console.log(`seed 생성 : ${seed}`);
 
-//const keyPair = nacl.sign.keyPair.fromSeed(seed);
-
-const keyPair = HDKey.getAccountSigner(mnemonic, 0,passphrase);
+// seed로 keypair를 생성 -> publickey ,secretkey생성
+const keyPair = nacl.sign.keyPair.fromSeed(seed); // return nacl.SignKeyPair 
+ 
+//const keyPair = HDKey.getAccountSigner(mnemonic, 0,passphrase);
 console.log(keyPair);
+
+//publicKey를 통해서 address를 만들고 (기존의 oasis~ + publickey로 만드는 구조)
+// secretkey를 통해서 privatekey를 만드는 구조?
 
 //console.log(keyPair); //안에 public 과 secretkey 있음
 //console.log(keyPair.publicKey.toString());
-//const publicKey = keyPair.publicKey;
-//const data = await addressFromPublicKey(publicKey);
+const publicKey = keyPair.publicKey;
+const data = addressFromPublicKey(publicKey); //return Type Promise<> 
+console.log(`data : ${data}`); //정보가 생성되지 않음...Promise Type Object
 
-//const address = addressToBech32(data);
-//console.log(`address : ${address}`);
+const address = addressToBech32(addressFromPublicKey(publicKey)); //oasis1xtnxq8 + public Key 에서 도출된 data
+console.log(`address : ${address}`);
 
 // const key = HDKey.makeHDKey(ED25519_CURVE, seed);
 // const publicKey = key.publicKey;

@@ -26,7 +26,7 @@ console.log(`passphrase 생성 : ${passphrase}`)
 
 const hdkey = new HDKey();
 
-const keypair = hdkey.getAccountSigner(mnemonic, 0, passphrase);
+const keypair = hdkey.getAccountSigner(mnemonic,0);
 
 console.log(keypair);
 
